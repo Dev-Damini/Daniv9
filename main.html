@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DANI V9 - PAIRING</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
+    
+    :root {
+      --primary: #00d4ff;
+      --secondary: #0051ff;
+      --accent: #ff007a;
+      --dark-bg: #050505;
+      --glass: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(0, 212, 255, 0.2);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: var(--dark-bg);
+      font-family: 'Rajdhani', sans-serif;
+      color: #e0e0e0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Animated Cyber Background */
+    .bg-animation {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 50% 50%, #10182b 0%, #050505 100%);
+      z-index: -2;
+    }
+
+    .scanline {
+      width: 100%;
+      height: 100px;
+      z-index: -1;
+      background: linear-gradient(0deg, rgba(0, 212, 255, 0) 0%, rgba(0, 212, 255, 0.05) 50%, rgba(0, 212, 255, 0) 100%);
+      opacity: 0.1;
+      position: absolute;
+      bottom: 100%;
+      animation: scanline 8s linear infinite;
+    }
+
+    @keyframes scanline {
+      0% { bottom: 100%; }
+      100% { bottom: -100px; }
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 420px;
+      padding: 20px;
+      z-index: 10;
+    }
+    
+    .box {
+      position: relative;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 40px 30px;
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 20px rgba(0, 212, 255, 0.1);
+    }
+
+    .logo-area {
+      margin-bottom: 25px;
+    }
+
+    .logo-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      background: linear-gradient(to right, #fff, var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5));
+    }
+
+    .description {
+      font-size: 15px;
+      color: #aaa;
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+
+    .description span {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .input-wrapper {
+      position: relative;
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid var(--glass-border);
+      padding: 16px 20px;
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      transition: 0.3s;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(45deg, var(--secondary), var(--primary));
+      color: white;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 10px 20px rgba(0, 81, 255, 0.3);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.1);
+      box-shadow: 0 15px 25px rgba(0, 212, 255, 0.4);
+    }
+
+    .footer-credit {
+      margin-top: 30px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #666;
+    }
+
+    .footer-credit b {
+      color: var(--accent);
+    }
+
+    #pair-display {
+      margin-top: 25px;
+      min-height: 50px;
+    }
+
+    .code-box {
+      background: rgba(0, 212, 255, 0.1);
+      border: 1px dashed var(--primary);
+      padding: 15px;
+      border-radius: 10px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px;
+      color: var(--primary);
+      cursor: pointer;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.8; }
+      50% { opacity: 1; transform: scale(1.02); }
+      100% { opacity: 0.8; }
+    }
+
+    .status-msg {
+      font-size: 14px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animation"></div>
+  <div class="scanline"></div>
+  
+  <div class="container">
+    <div class="box">
+      <div class="logo-area">
+        <div class="logo-text">DANI V9</div>
+      </div>
+      
+      <p class="description">
+        Experience the next generation of <span>Automated WhatsApp Intelligence</span>. Securely pair your account to deploy advanced commands, utility tools, and seamless AI automation.
+      </p>
+
+      <div class="input-wrapper">
+        <input type="tel" id="number" placeholder="Enter number (+234...)">
+      </div>
+
+      <button id="submit">Generate Link Code</button>
+
+      <div id="pair-display"></div>
+
+      <div class="footer-credit">
+        Created by <b>Damini Codesphere</b>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+  <script>
+    const submitBtn = document.getElementById("submit");
+    const numberInput = document.getElementById("number");
+    const display = document.getElementById("pair-display");
+
+    async function copyToClipboard(text) {
+      await navigator.clipboard.writeText(text);
+      const codeBox = document.querySelector(".code-box");
+      codeBox.innerHTML = '<i class="fas fa-check"></i> COPIED';
+      setTimeout(() => { codeBox.innerText = text; }, 2000);
+    }
+
+    submitBtn.addEventListener("click", async () => {
+      const num = numberInput.value.replace(/[^0-9]/g, "");
+      
+      if (num.length < 10) {
+        display.innerHTML = '<div class="status-msg" style="color:var(--accent)">Invalid number format!</div>';
+        return;
+      }
+
+      display.innerHTML = '<div class="status-msg" style="color:var(--primary)"><i class="fas fa-spinner fa-spin"></i> Initializing Secure Connection...</div>';
+
+      try {
+        let { data } = await axios(`/code?number=${num}`);
+        let code = data.code || "ERROR";
+        
+        display.innerHTML = `
+          <div class="code-box" onclick="copyToClipboard('${code}')">
+            ${code}
+          </div>
+          <div class="status-msg">Click code to copy and paste in WhatsApp notifications</div>
+        `;
+      } catch (e) {
+        display.innerHTML = '<div class="status-msg" style="color:var(--accent)">System Offline. Try again later.</div>';
+      }
+    });
+  </script>
+</body>
+</html>
