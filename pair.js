@@ -1106,9 +1106,9 @@ case 'allmenu': {
     }
 }
 break;
-}
-                     // Case: pair
-                case 'pair': {
+
+// Case: pair
+case 'pair': {
                 await socket.sendMessage(sender, { react: { text: '📲', key: msg.key } });
                     const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
                     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
