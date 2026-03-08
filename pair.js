@@ -1106,7 +1106,6 @@ case 'allmenu': {
     }
 }
 break;
-}
                      // Case: pair
                 case 'pair': {
                 await socket.sendMessage(sender, { react: { text: '📲', key: msg.key } });
@@ -3405,16 +3404,12 @@ case 'apk': {
       throw new Error('Failed to shorten URL or invalid response from is.gd');
     }
 
-    await socket.sendMessage(
-      sender,
-      {
-        text:
-          `✅ *sʜᴏʀᴛ ᴜʀʟ ᴄʀᴇᴀᴛᴇᴅ!* 😘\n\n` +
-          `🌐 *ᴏʀɪɢɪɴᴀʟ:* ${url}\n` +
-          `🔍 *sʜᴏʀᴛᴇɴᴇᴅ:* ${shortUrl}\n\n` +
-          `> © powered by me`
-      },
-      {
+    await socket.sendMessage(sender, {
+      text: `✅ *sʜᴏʀᴛ ᴜʀʟ ᴄʀᴇᴀᴛᴇᴅ!* 😘\n\n` +
+            `🌐 *ᴏʀɪɢɪɴᴀʟ:* ${url}\n` +
+            `🔍 *sʜᴏʀᴛᴇɴᴇᴅ:* ${shortUrl}\n\n` +
+            `> © powered by me`
+    }, { 
         quoted: msg,
         forwardingScore: 999,
         isForwarded: true,
@@ -3424,7 +3419,7 @@ case 'apk': {
           serverMessageId: 428
         }
       }
-    );
+    });
 
     await new Promise(resolve => setTimeout(resolve, 2000));
     await socket.sendMessage(sender, { 
