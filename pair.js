@@ -847,36 +847,34 @@ case 'menu': {
     await socket.sendMessage(sender, { react: { text: '✅', key: msg.key } });
   } catch (error) {
     console.error('Menu command error:', error);
+
     const usedMemory = Math.round(process.memoryUsage().heapUsed / 1024 / 1024);
     const totalMemory = Math.round(os.totalmem() / 1024 / 1024);
+
     let fallbackMenuText = `
 ╭───────────────
-│ 🤖 ʙᴏᴛ : ᴍɪɴɪ sᴛᴀᴄʏ xᴅ
+│ 🤖 ʙᴏᴛ : DANI V9
 │ 👤 ᴜsᴇʀ : @${sender.split("@")[0]}
 │ 🔑 ᴘʀᴇғɪx : ${config.PREFIX}
 │ 🧠 ᴍᴇᴍᴏʀʏ : ${usedMemory}MB / ${totalMemory}ᴍʙ
 ╰───────────────
 
-${config.PREFIX}ᴀʟʟᴍᴇɴᴜ ᴛᴏ ᴠɪᴇᴡ ᴀʟʟ ᴄᴍᴅs 
-> *Damini codesphere organization*
+${config.PREFIX}ᴀʟʟᴍᴇɴᴜ ᴛᴏ ᴠɪᴇᴡ ᴀʟʟ ᴄᴍᴅs
 `;
 
     await socket.sendMessage(from, {
-    image: { url: "https://files.catbox.moe/jtzm4o.png" },
-    caption: fallbackMenuText,
-    contextInfo: messageContext 
-}, { 
-    quoted: fakevCard 
-});
+        image: { url: "https://files.catbox.moe/jtzm4o.png" },
+        caption: fallbackMenuText,
+        contextInfo: messageContext
+    }, { quoted: fakevCard });
 
-await socket.sendMessage(from, { 
-    react: { 
-        text: '❌', 
-        key: msg.key 
-    } 
-});
-break;
+    await socket.sendMessage(from, {
+        react: { text: '❌', key: msg.key }
+    });
 }
+
+break;
+}   // ← THIS WAS MISSING (end of case 'menu')
 case 'allmenu': {
   try {
     await socket.sendMessage(sender, { react: { text: '📜', key: msg.key } });
@@ -1010,10 +1008,6 @@ case 'allmenu': {
   }
   break;
 }
-
-
-
-                // Case: fc (follow channel
             case 'fc': {
                     if (args.length === 0) {
                         return await socket.sendMessage(sender, {
@@ -4070,6 +4064,150 @@ case 'vnum': case 'sms': {
     } catch (e) {
         console.error('Vnum Error:', e);
         await socket.sendMessage(sender, { text: `❌ ꜱʏꜱᴛᴇᴍ ᴇʀʀᴏʀ: ᴜɴᴀʙʟᴇ ᴛᴏ ᴀᴄᴄᴇꜱꜱ ᴠ-ɴᴜᴍ ꜱᴇʀᴠᴇʀ.` }, { quoted: msg });
+    }
+}
+break;
+case 'groupstatus':
+case 'gstatus':
+case 'gst': {
+    if (!m.isGroup) {
+        return reply(`👥 *DANI V9 Group Status*\n\nThis command can only be used in groups.`);
+    }
+    
+    try {
+        await devtrust.sendMessage(m.chat, { react: { text: '📢', key: m.key } });
+        
+        // Check if replying to a message or providing text
+        const quotedMsg = m.quoted;
+        const textInput = text;
+        
+        if (!quotedMsg && !textInput) {
+            return reply(`📢 *DANI V9 Group Status*\n\nReply to an image/video/audio or provide text to post as group status.\n\nExample: ${prefix}gstatus Hello group!`);
+        }
+        
+        // Simple random ID generator
+        function generateMessageId() {
+            return '3EB0' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        }
+        
+        let statusInnerMessage = {};
+        
+        // ==========================================
+        // 1. HANDLE TEXT STATUS (BLACK BACKGROUND)
+        // ==========================================
+        if (!quotedMsg && textInput) {
+            statusInnerMessage = {
+                extendedTextMessage: {
+                    text: textInput,
+                    backgroundArgb: 0xFF000000, // BLACK background
+                    textArgb: 0xFFFFFFFF, // White text
+                    font: 1,
+                    contextInfo: { 
+                        mentionedJid: [],
+                        isGroupStatus: true 
+                    }
+                }
+            };
+            
+            // Create and send status
+            const statusPayload = {
+                groupStatusMessageV2: {
+                    message: statusInnerMessage
+                }
+            };
+            
+            const statusId = generateMessageId();
+            await devtrust.relayMessage(m.chat, statusPayload, { messageId: statusId });
+            
+            await devtrust.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
+            return reply(`📢 *DANI V9 Group Status*\n\nText status posted!`);
+        }
+        
+        // ==========================================
+        // 2. HANDLE QUOTED MEDIA/TEXT
+        // ==========================================
+        else if (quotedMsg) {
+            // Check if it's a media message
+            const mime = (quotedMsg.msg || quotedMsg).mimetype || '';
+            
+            // IMAGE STATUS
+            if (/image/.test(mime)) {
+                // Download image
+                let media = await quotedMsg.download();
+                
+                // Send as image status
+                await devtrust.sendMessage(m.chat, {
+                    image: media,
+                    caption: textInput || quotedMsg.caption || '',
+                    contextInfo: { isGroupStatus: true }
+                });
+            } 
+            
+            // VIDEO STATUS
+            else if (/video/.test(mime)) {
+                // Download video
+                let media = await quotedMsg.download();
+                
+                // Send as video status
+                await devtrust.sendMessage(m.chat, {
+                    video: media,
+                    caption: textInput || quotedMsg.caption || '',
+                    contextInfo: { isGroupStatus: true }
+                });
+            }
+            
+            // AUDIO STATUS (NEW)
+            else if (/audio/.test(mime)) {
+                // Download audio
+                let media = await quotedMsg.download();
+                
+                // Send as audio status
+                await devtrust.sendMessage(m.chat, {
+                    audio: media,
+                    mimetype: 'audio/mpeg',
+                    ptt: false, // true for voice note
+                    contextInfo: { isGroupStatus: true }
+                });
+            }
+            
+            // TEXT STATUS (Quoted text - BLACK BACKGROUND)
+            else if (quotedMsg.conversation || quotedMsg.text) {
+                const textContent = quotedMsg.conversation || quotedMsg.text || textInput;
+                
+                statusInnerMessage = {
+                    extendedTextMessage: {
+                        text: textContent,
+                        backgroundArgb: 0xFF000000, // BLACK background
+                        textArgb: 0xFFFFFFFF, // White text
+                        font: 2,
+                        contextInfo: { 
+                            mentionedJid: [],
+                            isGroupStatus: true 
+                        }
+                    }
+                };
+                
+                const statusPayload = {
+                    groupStatusMessageV2: {
+                        message: statusInnerMessage
+                    }
+                };
+                
+                const statusId = generateMessageId();
+                await devtrust.relayMessage(m.chat, statusPayload, { messageId: statusId });
+                
+            } else {
+                return reply(`❌ *DANI V9 Group Status*\n\nUnsupported media type. Reply to image, video, audio, or text only.`);
+            }
+            
+            await devtrust.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
+            reply(`📢 *DANI V9 Group Status*\n\nStatus posted!`);
+        }
+        
+    } catch (error) {
+        console.error('Group Status Error:', error);
+        await devtrust.sendMessage(m.chat, { react: { text: '❌', key: m.key } });
+        reply(`⚠️ *DANI V9 Group Status*\n\nFailed: ${error.message}`);
     }
 }
 break;
