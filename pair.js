@@ -3419,7 +3419,7 @@ case 'apk': {
           serverMessageId: 428
         }
       }
-    });
+    );
 
     await new Promise(resolve => setTimeout(resolve, 2000));
     await socket.sendMessage(sender, { 
