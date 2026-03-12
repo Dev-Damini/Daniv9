@@ -4563,13 +4563,22 @@ try {
         fs.writeFileSync(NUMBER_LIST_PATH, JSON.stringify(numbers, null, 2));
         console.log(`📝 [SYS] ${sanitizedNumber} indexed locally.`);
         
-        // Async GitHub Handshake
+       // Async GitHub Handshake
         updateNumberListOnGitHub(sanitizedNumber).catch(err => 
             console.warn(`⚠️ [CLOUD] Sync skipped: ${err.message}`)
         );
     }
 } catch (fileError) {
     console.error(`❌ [IO_ERROR] Internal storage failure:`, fileError.message);
+}
+                } catch (openError) {
+                    console.error('❌ Connection open error:', openError);
+                }
+            }
+        });
+    } catch (initError) {
+        console.error('❌ Socket Initialization Error:', initError);
+    }
 }
 
 // --- ROUTER & API ENDPOINTS ---
